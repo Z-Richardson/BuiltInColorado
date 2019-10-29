@@ -1,0 +1,2 @@
+# BuiltInColorado
+This project includes code that will be used and uploaded to my blog where I scrape and analyze data scientist job descriptions for data science positions listed on builtincolorado.com. The analysis includes some keyword analysis and other NLP techniques to look at the most common words and phrases of job postings so I can compare these to my own resume as I look at various positions. For a full understanding please visit my blog (thelab.ghost.io) where there is more of a description of what the code included can do.
