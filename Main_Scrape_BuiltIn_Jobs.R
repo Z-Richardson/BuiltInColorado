@@ -63,6 +63,5 @@ for(i in seq_along(page_results)) {
 }
 full_df$job.title <- as.character(full_df$job.title)
 # ----------------------------------------------------------------------------------------
-setwd("/Users/Admin/Dropbox/Personal Research Files/Job Post Keyword Searches")
 save(full_df, file = "full_job_info.RData")
 # ----------------------------------------------------------------------------------------
