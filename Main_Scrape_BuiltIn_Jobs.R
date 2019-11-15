@@ -92,6 +92,7 @@ for(i in page.links) {
   full_df <- rbind(full_df, df)
 }
 full_df$job.title <- as.character(full_df$job.title)
+full_df <- unique(full_df)
 # ----------------------------------------------------------------------------------------
 save(full_df, file = "full_job_info.RData")
 # ----------------------------------------------------------------------------------------
