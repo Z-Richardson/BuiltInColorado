@@ -35,8 +35,7 @@ datajobs.url <- "https://www.builtincolorado.com/jobs?f[0]=job-category_data-ana
 # page number format so if there are 6 pages then the max page number will be 5 so it
 # seems more efficient to pull the links than to pull the values.)
 page.links <- read_html(datajobs.url) %>%
-  html_nodes('.js-pager__items') %>%
-  html_nodes('a') %>%
+  html_nodes('.js-pager__items a') %>%
   html_attr('href') %>%
   unique()
 # One other note, I choose to mostly use CSS at first for the selector items since it's
@@ -44,17 +43,12 @@ page.links <- read_html(datajobs.url) %>%
 # --------------------------------------
 # --------------------------------------
 # Now itterate over the links to pull in the key info for each job description:
-full_df <- data.frame()
+
+job.links <- c()
 for(i in page.links) {
   url <- paste0(alljobs.url, i)
   page <- read_html(url)
-
-  # get job titles
-  job.title <- page %>%
-    html_nodes('div.block-views-blockjobs-jobs-landing') %>%
-    html_nodes('h2') %>%
-    html_text()
-    
+  
   # get links
   links <- page %>% 
     html_nodes('div.block-views-blockjobs-jobs-landing') %>%
@@ -62,36 +56,63 @@ for(i in page.links) {
     html_nodes(xpath = ".//div[@class='wrap-view-page']") %>%
     html_nodes('a') %>%
     html_attr('href')
+  links <- paste0("https://www.builtincolorado.com", links)
+  job.links <- append(job.links, links)
+} 
+job.links <- unique(job.links)
+# -------------------------------------------------
+job.title <- c()
+company.name <- c()
+job.description <- c()
+job.category <- c()
+job.subcategory <- c()
+# ---------------------
+for(i in job.links) {
+  page <- read_html(i)
   
-  job.description <- c()
-  for(i in seq_along(links)) {
-    
-    url <- paste0("https://www.builtincolorado.com",links[i])
-    page <- read_html(url)
-    
-    job.description[[i]] <- page %>%
-      html_nodes(xpath = "//div[@class='node__content']") %>%
-      html_text() %>%
-      str_replace_all(., '[\r\n]' , ' ') %>%
-      stri_trim_both()
-  }
+  # get job titles
+  title <- page %>%
+    html_nodes('.job-info-wrapper h1') %>%
+    html_text() %>%
+    str_replace_all(., '[\r\n]' , ' ') %>%
+    stri_trim_both()
+  job.title <- append(job.title, title)
   
-  company.name <- c()
-  for(i in seq_along(links)) {
-    
-    url <- paste0("https://www.builtincolorado.com",links[i])
-    page <- read_html(url)
-    
-    company.name[[i]] <- page %>%
-      html_nodes('div.job-info-wrapper') %>%
-      html_nodes(xpath = ".//div[@class='field__item']") %>%
-      html_text() %>%
-      stri_trim_both()
-  }  
-  df <- data.frame(job.title, company.name, job.description)
-  full_df <- rbind(full_df, df)
+  # get company names
+  c.name <- page %>%
+    html_nodes('.job-info a') %>%
+    html_text() %>%
+    str_replace_all(., '[\r\n]' , ' ') %>%
+    stri_trim_both()
+  company.name <- append(company.name, c.name)
+
+  # get job descriptions
+  j.desc <- page %>%
+    html_nodes(xpath = "//div[@class='job-description fade-out']") %>%
+    html_text() %>%
+    str_replace_all(., '[\r\n]' , ' ') %>%
+    stri_trim_both()
+  job.description <- append(job.description, j.desc)
+
+  cat <- page %>%
+    html_nodes('.job-category-links a:nth-child(1)') %>%
+    html_text() %>%
+    str_replace_all(., '[\r\n]' , ' ') %>%
+    stri_trim_both()
+  job.category <- append(job.category, cat)
+  
+  subcat <- page %>%
+    html_nodes('.job-category-links a:nth-child(3)') %>%
+    html_text() %>%
+    str_replace_all(., '[\r\n]' , ' ') %>%
+    stri_trim_both()
+  job.subcategory <- append(job.subcategory, subcat)
+  
 }
-full_df$job.title <- as.character(full_df$job.title)
+full_df <- data.frame(job.title, company.name, job.category, 
+                      job.subcategory, job.description)
+  full_df <- full_df %>% mutate_if(is.factor, as.character) %>% unique()
+
 full_df <- unique(full_df)
 # ----------------------------------------------------------------------------------------
 save(full_df, file = "full_job_info.RData")
