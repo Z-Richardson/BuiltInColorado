@@ -1,3 +1,22 @@
+# -----------------------------------------------------------------------------
+# Script Name: Keyword_Analysis_Part1
+#
+# Purpose of Script: Initial keyword analysis of job description data
+#
+# Author: Zachary Richardson, Ph.D.
+#
+# Date Created: 2019-11-21
+#
+# Copyright (c) Zachary Richardson, 2019
+# Email: zachinthelab@gmail.com
+# Blog: thelab.ghost.io
+# --------------------------------------
+#
+# Notes: Perform an initial keyword analysis of the data. This is very basic
+#        and needs a lot of revision before being a 'complete' analysis, but
+#        it's a really good start.
+#
+# -----------------------------------------------------------------------------
 # Job Keyword Analysis
 library(dplyr)
 library(stringr)
@@ -8,10 +27,11 @@ library(udpipe)
 library(textrank)
 library(lattice)
 # ----------------------------------------------------------------------------------------
-setwd("/Users/Admin/Dropbox/Personal Research Files/Job Post Keyword Searches")
+# Load Data
 load("full_job_info.RData")
-  ds.df <- full_df[grep("data scientist", tolower(full_df$job.title)),]
+  ds.df <- subset(full_df, job.subcategory == "Data Science")
 # ----------------------------------------------------------------------------------------
+# Job Keyword Analysis
 ud_model <- udpipe_download_model(language = "english-ewt")
 ud_model <- udpipe_load_model(ud_model$file_model)
 x <- udpipe_annotate(ud_model, x = full_df$job.description)
@@ -53,7 +73,11 @@ stats <- cooccurrence(x = x$lemma,
                       relevant = x$upos %in% c("NOUN", "ADJ"), skipgram = 2)
 head(stats)
 
-
+  stats$phrase <- paste0(stats$term1 ," ", stats$term2)
+  stats$phrase <- factor(stats$phrase, levels = rev(stats$phrase))
+  barchart(phrase ~ cooc, data = head(stats, 30), col = "cadetblue", 
+           main = "Most occurring phrases", xlab = "Freq")
+  
 # ----------------------------------------------------------------------------------------
 # Corpus Keyword Analysis
 # -----------------------
