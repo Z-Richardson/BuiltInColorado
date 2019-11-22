@@ -42,19 +42,15 @@ page.links <- read_html(datajobs.url) %>%
 # shorter and easier to identify exactly wher ewe want to look at things.
 # --------------------------------------
 # --------------------------------------
-# Now itterate over the links to pull in the key info for each job description:
-
+# Now iterate over the links to pull in the key info for each job description:
 job.links <- c()
 for(i in page.links) {
   url <- paste0(alljobs.url, i)
   page <- read_html(url)
-  
+
   # get links
-  links <- page %>% 
-    html_nodes('div.block-views-blockjobs-jobs-landing') %>%
-    html_nodes(xpath = ".//div[@class='view-content']") %>%
-    html_nodes(xpath = ".//div[@class='wrap-view-page']") %>%
-    html_nodes('a') %>%
+  links <- page %>%
+    html_nodes('.block-views-blockjobs-jobs-landing .wrap-view-page a') %>%
     html_attr('href')
   links <- paste0("https://www.builtincolorado.com", links)
   job.links <- append(job.links, links)
