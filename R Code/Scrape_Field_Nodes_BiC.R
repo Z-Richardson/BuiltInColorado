@@ -24,7 +24,6 @@ library(dplyr)
 library(tidyverse)
 library(stringr)
 library(stringi)
-library(lattice)
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
@@ -68,11 +67,8 @@ joblinks <- function(link.list) {
     url <- paste0(basejobs.url, i)
     page <- read_html(url)
     # get links
-    links <- page %>% 
-      html_nodes('div.block-views-blockjobs-jobs-landing') %>%
-      html_nodes(xpath = ".//div[@class='view-content']") %>%
-      html_nodes(xpath = ".//div[@class='wrap-view-page']") %>%
-      html_nodes('a') %>%
+    links <- page %>%
+      html_nodes('.block-views-blockjobs-jobs-landing .wrap-view-page a') %>%
       html_attr('href')
     links <- paste0("https://www.builtincolorado.com", links)
     job.links <- append(job.links, links)
@@ -80,17 +76,15 @@ joblinks <- function(link.list) {
   job.links <- unique(job.links)
   return(job.links)
 }
+# --------------------------------------
 jobtech <- function(link.list) {
   job.links <- c()
   for(i in link.list) {
     url <- paste0(basejobs.url, i)
     page <- read_html(url)
     # get links
-    links <- page %>% 
-      html_nodes('div.block-views-blockjobs-jobs-landing') %>%
-      html_nodes(xpath = ".//div[@class='view-content']") %>%
-      html_nodes(xpath = ".//div[@class='wrap-view-page']") %>%
-      html_nodes('a') %>%
+    links <- page %>%
+      html_nodes('.block-views-blockjobs-jobs-landing .wrap-view-page a') %>%
       html_attr('href')
     links <- paste0("https://www.builtincolorado.com", links)
     job.links <- append(job.links, links)
@@ -101,10 +95,8 @@ jobtech <- function(link.list) {
     for(i in job.links) {
       page <- read_html(i)
       itm.temp <- page %>%
-        html_nodes(xpath = "//*[@id='bix-companies-our-full-stack']") %>%
-        html_nodes(xpath = ".//div[contains(@class,'tab-content')]") %>%
-        html_nodes('li') %>%
-        html_nodes('span.full-stack-item') %>%
+        html_nodes('.block-bix-companies-our-full-stack-block 
+                    .tab-content li .full-stack-item') %>%
         html_text()
       
       itm.temp <- if(length(itm.temp) > 0) 
@@ -113,17 +105,14 @@ jobtech <- function(link.list) {
       
       tech.item <- append(tech.item, itm.temp)
     }
-  
     tech.field <- c()
     subcats <- c()
     jlink <- c()
     for(i in job.links) {
       page <- read_html(i)
       fld.temp <- page %>%
-        html_nodes(xpath = "//*[@id='bix-companies-our-full-stack']") %>%
-        html_nodes(xpath = ".//div[contains(@class,'tab-content')]") %>%
-        html_nodes('li') %>%
-        html_nodes('span.full-stack-item-field') %>%
+        html_nodes('.block-bix-companies-our-full-stack-block 
+                    .tab-content li .full-stack-item-field') %>%
         html_text()
       
       fld.temp <- if(length(fld.temp) > 0) 
