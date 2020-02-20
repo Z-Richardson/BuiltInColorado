@@ -71,22 +71,13 @@ nrows = len(df)
 lemmatized_text_list = []
 
 for row in range(0, nrows):
-    
-    # Create an empty list containing lemmatized words
     lemmatized_list = []
-    
-    # Save the text and its words into an object
     text = df.loc[row]['Description_Parsed_4']
     text_words = text.split(" ")
-
-    # Iterate through every word to lemmatize
     for word in text_words:
         lemmatized_list.append(wordnet_lemmatizer.lemmatize(word, pos="v"))
         
-    # Join the list
     lemmatized_text = " ".join(lemmatized_list)
-    
-    # Append to the list containing the texts
     lemmatized_text_list.append(lemmatized_text)
 
 df['Description_Parsed_5'] = lemmatized_text_list
