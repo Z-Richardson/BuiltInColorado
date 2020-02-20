@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import os
-os.chdir('/Users/Admin/Dropbox/Post-Doc Files/The Lab (Blog Site)/Job Post Keyword Searches/')
+os.chdir('./BuiltInColorado/')
 # =============================================================================
 # Load All Data
 # =============================================================================
