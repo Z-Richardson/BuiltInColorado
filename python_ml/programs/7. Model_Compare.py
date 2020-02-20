@@ -13,11 +13,11 @@ Created on Wed Feb 19 15:39:52 2020
 import pickle
 import pandas as pd
 import os
-os.chdir('/Users/Admin/Dropbox/Post-Doc Files/The Lab (Blog Site)/Job Post Keyword Searches/')
+os.chdir('./BuiltInColorado/')
 # =============================================================================
 # Set-Up Data
 # =============================================================================
-path_pickles = "/Users/Admin/Dropbox/Post-Doc Files/The Lab (Blog Site)/Job Post Keyword Searches/python_ml/models/"
+path_pickles = "./BuiltInColorado/python_ml/models/"
 
 list_pickles = [
     "df_models_gbc.pickle",
