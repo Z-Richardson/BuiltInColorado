@@ -22,12 +22,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import chi2
 import numpy as np
 import os
-os.chdir('/Users/Admin/Dropbox/Post-Doc Files/The Lab (Blog Site)/Job Post Keyword Searches/')
+os.chdir('./BuiltInColorado/')
 
 # =============================================================================
 # Load Data
 # =============================================================================
-df_path = "/Users/Admin/Dropbox/Post-Doc Files/The Lab (Blog Site)/Job Post Keyword Searches/"
+df_path = "./BuiltInColorado/"
 df_path2 = df_path + 'jobs_data.csv'
 df = pd.read_csv(df_path2, sep=',')
 
